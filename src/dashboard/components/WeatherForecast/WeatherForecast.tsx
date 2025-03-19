@@ -1,5 +1,6 @@
 import { WeatherCondition } from '../../../shared/components/WeatherCondition/WeatherCondition.tsx';
 import { useForecast } from '../../../shared/hooks/useForecast.ts';
+import classes from './WeatherForecast.module.css';
 
 export function WeatherForecast() {
   const { data } = useForecast();
@@ -7,7 +8,7 @@ export function WeatherForecast() {
   return (
     <>
       <h2>Weather forecast</h2>
-      <ul>
+      <ul className={classes.list}>
         {data.map(({ date, minTemperature, maxTemperature, weatherCode }) => (
           <li key={date}>
             <dl>
