@@ -33,13 +33,19 @@ function mapWeatherResponse({
 }: WeatherResponse): WeatherData {
   return {
     current: {
-      temperature: [current.temperature_2m, current_units.temperature_2m],
+      temperature:
+        current.temperature_2m || current_units.temperature_2m
+          ? [current.temperature_2m, current_units.temperature_2m]
+          : null,
       weatherCode: current.weather_code,
-      windSpeed: [current.wind_speed_10m, current_units.wind_speed_10m],
-      relativeHumidity: [
-        current.relative_humidity_2m,
-        current_units.relative_humidity_2m,
-      ],
+      windSpeed:
+        current.wind_speed_10m || current_units.wind_speed_10m
+          ? [current.wind_speed_10m, current_units.wind_speed_10m]
+          : null,
+      relativeHumidity:
+        current.relative_humidity_2m || current_units.relative_humidity_2m
+          ? [current.relative_humidity_2m, current_units.relative_humidity_2m]
+          : null,
     },
   };
 }

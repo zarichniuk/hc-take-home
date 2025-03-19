@@ -6,9 +6,9 @@ export interface Location {
 type Value = [value: number, unit: string];
 export interface WeatherData {
   current: {
-    temperature: Value;
-    weatherCode: number;
-    windSpeed: Value;
-    relativeHumidity: Value;
+    temperature: Value | null;
+    weatherCode: number | null;
+    windSpeed: Value | null;
+    relativeHumidity: Value | null;
   };
 }
