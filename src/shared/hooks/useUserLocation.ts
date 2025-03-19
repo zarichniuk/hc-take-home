@@ -1,56 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { type Location } from '../types.ts';
 
-type UseUserLocation =
-  | {
-      location: null;
-      error: null;
-      isLoading: true;
-    }
-  | {
-      location: Location;
-      error: null;
-      isLoading: false;
-    }
-  | {
-      location: null;
-      error: string;
-      isLoading: false;
-    };
-
-export function useUserLocation(): UseUserLocation {
-  const [location, setLocation] = useState<Location | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      setIsLoading(false);
-      return;
-    }
-
-    function getLocation() {
-      return new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
+export function useUserLocation() {
+  return useSuspenseQuery({
+    queryKey: ['location'],
+    queryFn: async () => {
+      if (!navigator.geolocation) {
+        throw new Error('Geolocation is not supported by your browser');
+      }
+      return new Promise<Location>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log(position);
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        }, reject);
       });
-    }
-
-    getLocation()
-      .then((position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(`Error: ${err.message}`);
-        setIsLoading(false);
-      });
-  }, []);
-
-  return <UseUserLocation>(
-    useMemo(() => ({ location, error, isLoading }), [location, error])
-  );
+    },
+  });
 }
