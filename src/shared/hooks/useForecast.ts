@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { format, addDays, formatISO } from 'date-fns';
 import { type Forecast } from '../types.ts';
 import { useUserLocation } from './useUserLocation.ts';
 
@@ -27,10 +28,13 @@ interface WeatherResponse {
 function mapWeatherResponse({
   daily_units,
   daily,
+  utc_offset_seconds,
 }: WeatherResponse): Forecast[] {
   return daily.time.map((time, index) => {
     return {
-      date: new Date(time * 1000).toISOString().split('T')[0],
+      date: formatISO(new Date(time * 1000 + utc_offset_seconds), {
+        representation: 'date',
+      }),
       minTemperature: [
         daily.temperature_2m_min[index],
         daily_units.temperature_2m_min,
@@ -46,8 +50,10 @@ function mapWeatherResponse({
 
 export function useForecast() {
   const { data: location } = useUserLocation();
-
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=5&format=json&timeformat=unixtime`;
+  const today = new Date();
+  const startDate = format(addDays(today, 1), 'yyyy-MM-dd');
+  const endDate = format(addDays(today, 6), 'yyyy-MM-dd');
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&start_date=${startDate}&end_date=${endDate}&format=json&timeformat=unixtime`;
 
   return useSuspenseQuery({
     queryKey: [url],
