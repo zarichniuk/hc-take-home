@@ -1,48 +1,31 @@
 import { useCurrentWeather } from '../../../shared/hooks/useCurrentWeather.ts';
-import { useUserLocation } from '../../../shared/hooks/useUserLocation.ts';
 import { WeatherCondition } from '../../../shared/components/WeatherCondition/WeatherCondition.tsx';
+import { isCurrentWeatherDetailed } from '../../../shared/types.ts';
 
 export function CurrentWeather() {
-  const { data: location } = useUserLocation();
-  const {
-    data: { temperature, weatherCode, windSpeed, relativeHumidity },
-  } = useCurrentWeather({
-    location,
-  });
+  const { data } = useCurrentWeather();
 
   return (
     <>
       <h2>Current weather</h2>
       <dl>
-        {temperature && (
-          <>
-            <dt>Temperature:</dt>
-            <dd>
-              {temperature[0]} {temperature[1]}
-            </dd>
-          </>
-        )}
-        {weatherCode && (
-          <>
-            <dt>Weather condition:</dt>
-            <dd>
-              <WeatherCondition weatherCode={weatherCode} />
-            </dd>
-          </>
-        )}
-        {windSpeed && (
+        <dt>Temperature:</dt>
+        <dd>
+          {data.temperature[0]} {data.temperature[1]}
+        </dd>
+        <dt>Weather condition:</dt>
+        <dd>
+          <WeatherCondition weatherCode={data.weatherCode} />
+        </dd>
+        {isCurrentWeatherDetailed(data) && (
           <>
             <dt>Wind speed:</dt>
             <dd>
-              {windSpeed[0]} {windSpeed[1]}
+              {data.windSpeed[0]} {data.windSpeed[1]}
             </dd>
-          </>
-        )}
-        {relativeHumidity && (
-          <>
             <dt>Relative humidity:</dt>
             <dd>
-              {relativeHumidity[0]} {relativeHumidity[1]}
+              {data.relativeHumidity[0]} {data.relativeHumidity[1]}
             </dd>
           </>
         )}
