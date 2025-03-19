@@ -1,14 +1,12 @@
-import { useWeatherResponse } from '../../../shared/hooks/useWeatherResponse.ts';
+import { useCurrentWeather } from '../../../shared/hooks/useCurrentWeather.ts';
 import { useUserLocation } from '../../../shared/hooks/useUserLocation.ts';
 import { WeatherCondition } from '../../../shared/components/WeatherCondition/WeatherCondition.tsx';
 
 export function CurrentWeather() {
   const { data: location } = useUserLocation();
   const {
-    data: {
-      current: { temperature, weatherCode, windSpeed, relativeHumidity },
-    },
-  } = useWeatherResponse({
+    data: { temperature, weatherCode, windSpeed, relativeHumidity },
+  } = useCurrentWeather({
     location,
   });
 

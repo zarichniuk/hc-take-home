@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { type Location, type WeatherData } from '../types.ts';
+import { type Location, type CurrentWeather } from '../types.ts';
 
 interface WeatherResponse {
   latitude: number;
@@ -30,27 +30,25 @@ interface WeatherResponse {
 function mapWeatherResponse({
   current,
   current_units,
-}: WeatherResponse): WeatherData {
+}: WeatherResponse): CurrentWeather {
   return {
-    current: {
-      temperature:
-        current.temperature_2m || current_units.temperature_2m
-          ? [current.temperature_2m, current_units.temperature_2m]
-          : null,
-      weatherCode: current.weather_code,
-      windSpeed:
-        current.wind_speed_10m || current_units.wind_speed_10m
-          ? [current.wind_speed_10m, current_units.wind_speed_10m]
-          : null,
-      relativeHumidity:
-        current.relative_humidity_2m || current_units.relative_humidity_2m
-          ? [current.relative_humidity_2m, current_units.relative_humidity_2m]
-          : null,
-    },
+    temperature:
+      current.temperature_2m || current_units.temperature_2m
+        ? [current.temperature_2m, current_units.temperature_2m]
+        : null,
+    weatherCode: current.weather_code,
+    windSpeed:
+      current.wind_speed_10m || current_units.wind_speed_10m
+        ? [current.wind_speed_10m, current_units.wind_speed_10m]
+        : null,
+    relativeHumidity:
+      current.relative_humidity_2m || current_units.relative_humidity_2m
+        ? [current.relative_humidity_2m, current_units.relative_humidity_2m]
+        : null,
   };
 }
 
-export function useWeatherResponse({
+export function useCurrentWeather({
   location,
   temperature = true,
   weatherCode = true,
